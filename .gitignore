@@ -1,0 +1,7 @@
+db/dev/pgdata
+db/dev/mnt_data
+
+*.beam
+*.ez
+/build
+erl_crash.dump
