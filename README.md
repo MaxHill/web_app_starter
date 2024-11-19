@@ -5,7 +5,9 @@
 
 
 # TODO
-- [logging](https://hexdocs.pm/flash/)
+- [ ] Integration testing
+- [ ] Frontend resources
+- [ ] [logging](https://hexdocs.pm/flash/)
 
 
 ```sh

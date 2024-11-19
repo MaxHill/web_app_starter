@@ -1,46 +1,33 @@
+import config/db/db_setup
+import config/jobs/jobs_setup
+import config/logging/logging_setup
+import config/webserver/webserver_setup
 import context
-import dot_env as dot
-import dot_env/env
+import dot_env
 import gleam/erlang/process
-import gleam/option
-import gleam/pgo
-import jobs
-import web
-import wisp
+
+// import lib/assets
 
 pub fn main() {
-  dot.new()
-  |> dot.set_path(".env")
-  |> dot.set_debug(False)
-  |> dot.load
+  // let assert Ok(_) = assets.read_vite_manifest()
 
-  // Setup db connection
-  let assert Ok(db_host) = env.get_string("DB_HOST")
-  let assert Ok(db_port) = env.get_int("DB_HOST_PORT")
-  let assert Ok(db_name) = env.get_string("DB_NAME")
-  let assert Ok(db_user) = env.get_string("DB_USER")
-  let assert Ok(db_password) = env.get_string("DB_PASSWORD")
-  let conn =
-    pgo.connect(
-      pgo.Config(
-        ..pgo.default_config(),
-        host: db_host,
-        port: db_port,
-        user: db_user,
-        database: db_name,
-        password: option.Some(db_password),
-        pool_size: 15,
-      ),
-    )
+  dot_env.new()
+  |> dot_env.set_path(".env")
+  |> dot_env.set_debug(False)
+  |> dot_env.load
+
+  // Setup database connection
+  let assert Ok(conn) = db_setup.setup()
 
   // Setup logger
-  wisp.configure_logger()
+  logging_setup.setup()
 
   // Setup jobs process
-  let assert Ok(bg_jobs) = jobs.setup(context.JobContext(conn))
+  let assert Ok(bg_jobs) = jobs_setup.setup(context.JobContext(conn))
 
   // Setup webserver process
-  let assert Ok(_webserver) = web.setup(context.WebContext(conn, bg_jobs))
+  let assert Ok(_webserver) =
+    webserver_setup.setup(context.WebContext(conn, bg_jobs))
 
   process.sleep_forever()
 }

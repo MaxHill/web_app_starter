@@ -1,7 +1,12 @@
 db/dev/pgdata
 db/dev/mnt_data
 
+# Frontend
+dist
+node_modules
+
 *.beam
 *.ez
 /build
 erl_crash.dump
+mprocs.log

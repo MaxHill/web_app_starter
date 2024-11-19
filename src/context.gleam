@@ -1,10 +1,10 @@
 import bg_jobs
-import gleam/pgo
+import pog
 
 pub type WebContext {
-  WebContext(conn: pgo.Connection, bg: bg_jobs.BgJobs)
+  WebContext(conn: pog.Connection, bg: bg_jobs.BgJobs)
 }
 
 pub type JobContext {
-  JobContext(conn: pgo.Connection)
+  JobContext(conn: pog.Connection)
 }
