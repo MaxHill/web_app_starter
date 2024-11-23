@@ -8,19 +8,15 @@ import gleam/list
 import gleam/string
 import gleeunit/should
 import models/guestbook_model/guestbook_model
-import pog
+import providers/db/test_db_provider
 import routes/routes
-import test_helpers/db
 import wisp/testing
 
 pub fn setup(f: fn(context.WebContext) -> a) {
   // Setup connection
-  dot_env.new()
-  |> dot_env.set_path(".env")
-  |> dot_env.set_debug(False)
-  |> dot_env.load
+  dot_env.new() |> dot_env.load
 
-  use conn <- db.setup_transaction()
+  use conn <- test_db_provider.transaction_test()
 
   let db_adapter = postgres_db_adapter.new(conn, [])
   let assert Ok(_) = db_adapter.migrate_up()
@@ -38,8 +34,6 @@ pub fn setup(f: fn(context.WebContext) -> a) {
   let ctx = context.WebContext(conn: conn, bg: bg)
 
   f(ctx)
-
-  pog.disconnect(ctx.conn)
 }
 
 pub fn create_guestbook_entry_test() {

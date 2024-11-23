@@ -8,6 +8,10 @@ import jobs/example_interval_job
 import jobs/example_job
 import jobs/example_scheduled_job
 
+/// Setup logging using bg_jobs.
+/// 
+/// See [bg_jobs](https://hexdocs.pm/bg_jobs/) for more info
+/// 
 pub fn setup(ctx: context.JobContext) {
   let db_adapter = postgres_db_adapter.new(ctx.conn, [])
   let assert Ok(_) = db_adapter.migrate_up()

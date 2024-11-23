@@ -1,33 +1,27 @@
-import config/db/db_setup
-import config/jobs/jobs_setup
-import config/logging/logging_setup
-import config/webserver/webserver_setup
 import context
 import dot_env
 import gleam/erlang/process
-
-// import lib/assets
+import providers/db/db_provider
+import providers/jobs/jobs_provider
+import providers/logging/logging_provider
+import providers/web_server/web_server_provider
 
 pub fn main() {
-  // let assert Ok(_) = assets.read_vite_manifest()
-
   dot_env.new()
-  |> dot_env.set_path(".env")
-  |> dot_env.set_debug(False)
   |> dot_env.load
 
   // Setup database connection
-  let assert Ok(conn) = db_setup.setup()
+  let assert Ok(conn) = db_provider.setup()
 
   // Setup logger
-  logging_setup.setup()
+  logging_provider.setup()
 
   // Setup jobs process
-  let assert Ok(bg_jobs) = jobs_setup.setup(context.JobContext(conn))
+  let assert Ok(bg_jobs) = jobs_provider.setup(context.JobContext(conn))
 
   // Setup webserver process
   let assert Ok(_webserver) =
-    webserver_setup.setup(context.WebContext(conn, bg_jobs))
+    web_server_provider.setup(context.WebContext(conn, bg_jobs))
 
   process.sleep_forever()
 }

@@ -14,6 +14,7 @@ watch_dev_server:
 
 watch_test:
     @just db wait
+    @just db -e "TEST_DATABASE_URL" drop
     @just db -e "TEST_DATABASE_URL" up
     watchexec --restart --verbose --clear --wrap-process=session --stop-signal SIGTERM --exts gleam --watch ./ -- "gleam test"
 
