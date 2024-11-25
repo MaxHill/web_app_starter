@@ -14,7 +14,7 @@ import jobs/example_scheduled_job
 /// 
 pub fn setup(ctx: context.JobContext) {
   let db_adapter = postgres_db_adapter.new(ctx.conn, [])
-  let assert Ok(_) = db_adapter.migrate_up()
+  let assert Ok(_) = db_adapter.migrate_up([logger_event_listener.listner])
 
   bg_jobs.new(db_adapter)
   |> bg_jobs.with_event_listener(logger_event_listener.listner)

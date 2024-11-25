@@ -1,17 +1,31 @@
 set dotenv-load := true
 
+# List available commands
 default:
     @just --list
 
-echo:
-    echo $TEMPLATE_DATABASE_URL
-
+# Start and start watching everything that's needed to run
 dev: 
-    mprocs "just db_start" "just watch_dev_server" "just watch_test" "just watch_sql_files"
+    mprocs "just db_start" "just watch_dev_server" "just watch_test" "just watch_db_generate_queries"
 
+# Start the dev server with watch 
 watch_dev_server:
+    @just db wait
+    @just db up
     watchexec --restart --verbose --clear --wrap-process=session --stop-signal SIGTERM --exts gleam --watch ./src -- "gleam run"
 
+
+# Testing
+#######################
+
+# Runs tests once (make sure db is running `$ just db_start`)
+test:
+    @just db wait
+    @just db -e "TEST_DATABASE_URL" drop
+    @just db -e "TEST_DATABASE_URL" up
+    gleam test
+
+# Watch for changes in any gleam file and run tests (make sure db is running `$ just db_start`)
 watch_test:
     @just db wait
     @just db -e "TEST_DATABASE_URL" drop
@@ -21,15 +35,16 @@ watch_test:
 # DATABASE
 #######################
 
-# Generate queries using squirrel
+# Generate queries using squirrel (make sure db is running `$ just db_start`)
 db_generate_queries: 
     gleam run -m squirrel
 
-# Watch /.*sql and generate queries using squirrel
-watch_sql_files:
+# Watch ./src/.*sql files and generate queries using squirrel
+watch_db_generate_queries:
+    @just db wait
     watchexec --restart --verbose --clear --wrap-process=session --stop-signal SIGTERM --exts sql --watch ./src/models -- "just db_generate_queries"
 
-# Dbmate
+# Alias for dbmate
 db *ARGS: 
     dbmate {{ARGS}}
 
@@ -37,20 +52,15 @@ db *ARGS:
 db_start:
     cd ./db/dev/ && ./run-postgres.sh
 
-# Start psql session for dev database
-db_inspect *ARGS:
+# Start psql command for dev database
+db_psql *ARGS:
     psql $DATABASE_URL {{ARGS}}
-    # docker exec -it $NAME psql -h localhost -U postgres
 
-db_inspect_test *ARGS:
+# Start psql  command for test database
+db_psql_test *ARGS:
     psql $TEST_DATABASE_URL {{ARGS}}
 
-db_inspect_template *ARGS:
-    psql $TEMPLATE_DATABASE_URL {{ARGS}}
-
-# Remove database data
+# Remove all database data from (./db/dev/pgdata/*)
 db_delete:
     rm -rf ./db/dev/pgdata/*
 
-db_schema: 
-    psql $TEST_DATABASE_URL -f "./db/schema.sql"

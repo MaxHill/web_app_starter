@@ -19,8 +19,6 @@ pub fn setup(f: fn(context.WebContext) -> a) {
   use conn <- test_db_provider.transaction_test()
 
   let db_adapter = postgres_db_adapter.new(conn, [])
-  let assert Ok(_) = db_adapter.migrate_up()
-
   let assert Ok(bg) =
     bg_jobs.new(db_adapter)
     |> bg_jobs.with_queue(
