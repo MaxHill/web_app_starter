@@ -5,11 +5,14 @@ import gleam/result
 import jobs/example_job
 import lustre/element
 import models/guestbook_model/guestbook_model
+import providers/logging/logging_provider as log
 import resources/views/view_guestbook_view/view_guestbook_view
 import wisp
 
 pub fn get(_req: wisp.Request, ctx: context.WebContext) -> wisp.Response {
   let guestbook_messages = guestbook_model.get_all_messages(ctx.conn)
+
+  ctx.log_ctx |> log.log_info("Someone browsed to the guestbook")
 
   case guestbook_messages {
     Ok(guestbook_messages) -> {

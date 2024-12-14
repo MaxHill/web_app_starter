@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+
+# Get the current tmux session name
+SESSION_NAME=$(tmux display-message -p '#S')
+
+# Create a new window called 'dev' in the current session
+tmux new-window -t "$SESSION_NAME" -n dev
+
+# Split the new window vertically
+tmux split-window -h -t "$SESSION_NAME:dev"
+
+# Run "just dev" in the left (new) pane
+tmux send-keys -t "$SESSION_NAME:dev.1" "just dev" C-m
+
+# Switch to the original window and start Vim
+tmux select-window -t "$SESSION_NAME:1"
+vim .
+clear
+

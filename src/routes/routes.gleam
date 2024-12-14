@@ -5,7 +5,7 @@ import routes/middlewares/base_middleware
 import wisp.{type Request, type Response}
 
 pub fn handle_request(req: Request, ctx: context.WebContext) -> Response {
-  use req <- base_middleware.middleware(req)
+  use #(req, ctx) <- base_middleware.middleware(req, ctx)
 
   case wisp.path_segments(req) {
     [] ->

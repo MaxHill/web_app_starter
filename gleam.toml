@@ -26,7 +26,11 @@ decode = ">= 0.4.1 and < 1.0.0"
 simplifile = ">= 2.2.0 and < 3.0.0"
 birl = ">= 1.7.1 and < 2.0.0"
 pog = ">= 1.0.0 and < 2.0.0"
-bg_jobs = ">= 0.4.0 and < 1.0.0"
+# bg_jobs = ">= 0.4.0 and < 1.0.0"
+bg_jobs = {path = "../bg_jobs/"}
+gleam_otp = ">= 0.16.0 and < 1.0.0"
+youid = ">= 1.2.0 and < 2.0.0"
+gtempo = ">= 5.1.2 and < 6.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

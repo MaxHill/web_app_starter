@@ -2,9 +2,9 @@ import bg_jobs
 import bg_jobs/jobs
 import context
 import gleam/dynamic
-import gleam/io
 import gleam/json
 import gleam/result
+import providers/logging/logging_provider as log
 
 pub const job_name = "EXAMPLE_JOB"
 
@@ -16,19 +16,23 @@ pub fn worker(ctx: context.JobContext) {
   jobs.Worker(job_name: job_name, handler: handler(ctx, _))
 }
 
-pub fn handler(_ctx: context.JobContext, job: jobs.Job) {
+pub fn handler(ctx: context.JobContext, job: jobs.Job) {
   use Payload(payload) <- result.try(
     from_string(job.payload)
     |> result.map_error(fn(_e) { "Could not decode payload" }),
   )
 
-  io.debug("Triggered job:" <> job_name <> ". With payload:" <> payload)
+  ctx.log_ctx
+  |> log.with_context("job_name", job_name)
+  |> log.with_context("job_payload", payload)
+  |> log.log_info("Triggered job")
+
   Ok(Nil)
 }
 
 pub fn dispatch(bg: bg_jobs.BgJobs, message message: String) {
   bg_jobs.new_job(job_name, to_string(Payload(message)))
-  |> bg_jobs.enqueue_job(bg)
+  |> bg_jobs.enqueue(bg)
 }
 
 fn to_string(send_email_job: Payload) {

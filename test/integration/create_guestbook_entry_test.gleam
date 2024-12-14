@@ -5,10 +5,12 @@ import bg_jobs/queue
 import context
 import dot_env
 import gleam/list
+import gleam/otp/static_supervisor as sup
 import gleam/string
 import gleeunit/should
 import models/guestbook_model/guestbook_model
 import providers/db/test_db_provider
+import providers/logging/logging_provider as log
 import routes/routes
 import wisp/testing
 
@@ -20,7 +22,8 @@ pub fn setup(f: fn(context.WebContext) -> a) {
 
   let db_adapter = postgres_db_adapter.new(conn, [])
   let assert Ok(bg) =
-    bg_jobs.new(db_adapter)
+    sup.new(sup.OneForOne)
+    |> bg_jobs.new(db_adapter)
     |> bg_jobs.with_queue(
       queue.new("test_queue")
       |> queue.with_worker(
@@ -29,7 +32,7 @@ pub fn setup(f: fn(context.WebContext) -> a) {
     )
     |> bg_jobs.build()
 
-  let ctx = context.WebContext(conn: conn, bg: bg)
+  let ctx = context.WebContext(conn: conn, log_ctx: log.new("test"), bg: bg)
 
   f(ctx)
 }
