@@ -15,6 +15,7 @@ A simple starter template for building web applications using
 - (WIP) Production docker image and fly.toml
 - (WIP) Frontend configuration using [vite](https://vite.dev/) for css and ts
 - (TODO) Session management using [kv_sessions](https://hexdocs.pm/wisp_kv_sessions/index.html)
+- (TODO) Email provider
 - (TODO) Auth
 - (TODO) ETS cache
 
@@ -26,10 +27,19 @@ A simple starter template for building web applications using
 - [DbMate](https://github.com/amacneil/dbmate)
 
 ## Getting started
-To start the database and all watch commands run: 
+To start developing
 ```sh
   $ just dev
 ```
+This starts: 
+- Database - (dockerized postgres)
+- Dev server - (wisp server)
+- Query generation - (squirrel)
+- tests - (gleeunit)
+Dev server, Query generation and tests are all started in watch mode, 
+see `justfile` for more info.
+
+This is all started in a mproc instance so it's easy to switch between them.
 
 ## Environment Variables
 - Development: Configure in .env.
@@ -187,8 +197,3 @@ Some migrations, like bg_jobs, are executed automatically at startup.
 Check `/src/providers/db/db_provider` for the setup process.
 
 
-
-## TODO
-- [ ] Frontend resources
-- [x] Integration testing
-- [x] logging
