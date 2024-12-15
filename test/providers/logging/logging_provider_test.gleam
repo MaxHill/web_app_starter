@@ -19,6 +19,6 @@ pub fn format_context_test() {
   |> log.with_context("key_2", "some other value")
   |> log.format("Hello", _)
   |> should.equal(
-    "test_logger: Hello                    context: [key: \"value\" | key_2: \"some other value\"]",
+    "test_logger: Hello                                |key=\"value\", key_2=\"some other value\"",
   )
 }

@@ -47,53 +47,6 @@ ALTER SEQUENCE public.guestbook_id_seq OWNED BY public.guestbook.id;
 
 
 --
--- Name: jobs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.jobs (
-    id character varying NOT NULL,
-    name character varying NOT NULL,
-    payload text NOT NULL,
-    attempts integer NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    available_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    reserved_at timestamp without time zone,
-    reserved_by text
-);
-
-
---
--- Name: jobs_failed; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.jobs_failed (
-    id character varying NOT NULL,
-    name character varying NOT NULL,
-    payload text NOT NULL,
-    attempts integer NOT NULL,
-    exception character varying NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    available_at timestamp without time zone NOT NULL,
-    failed_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
---
--- Name: jobs_succeeded; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.jobs_succeeded (
-    id character varying NOT NULL,
-    name character varying NOT NULL,
-    payload text NOT NULL,
-    attempts integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    available_at timestamp without time zone NOT NULL,
-    succeeded_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -115,30 +68,6 @@ ALTER TABLE ONLY public.guestbook ALTER COLUMN id SET DEFAULT nextval('public.gu
 
 ALTER TABLE ONLY public.guestbook
     ADD CONSTRAINT guestbook_pkey PRIMARY KEY (id);
-
-
---
--- Name: jobs_failed jobs_failed_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jobs_failed
-    ADD CONSTRAINT jobs_failed_pkey PRIMARY KEY (id);
-
-
---
--- Name: jobs jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
-
-
---
--- Name: jobs_succeeded jobs_succeeded_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.jobs_succeeded
-    ADD CONSTRAINT jobs_succeeded_pkey PRIMARY KEY (id);
 
 
 --

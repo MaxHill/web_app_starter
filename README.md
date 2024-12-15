@@ -4,11 +4,19 @@
 <!-- [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/app/) -->
 
 A simple starter template for building web applications using 
-[Gleam](https://gleam.run/). If you’re interested in quickly setting 
-up a robust development environment for your projects, this template 
-might be the perfect fit.
+[Gleam](https://gleam.run/). 
 
 ---
+
+## Provided:
+- Development / testing database using docker and [pog](https://github.com/lpil/pog)
+- Logging setup
+- Background jobs setup using [bg_jobs](https://hexdocs.pm/bg_jobs/)
+- (WIP) Production docker image and fly.toml
+- (WIP) Frontend configuration using [vite](https://vite.dev/) for css and ts
+- (TODO) Session management using [kv_sessions](https://hexdocs.pm/wisp_kv_sessions/index.html)
+- (TODO) Auth
+- (TODO) ETS cache
 
 ## Development system requirements
 - [Gleam](https://gleam.run/)
@@ -20,50 +28,10 @@ might be the perfect fit.
 ## Getting started
 To start the database and all watch commands run: 
 ```sh
-  $ npm install
   $ just dev
 ```
 
----
-
-## Database
-This starter uses **PostgreSQL** as the database. 
-The development and testing databases are managed using Docker.
-
-### Database setup
-- Development database configuration is managed via Docker. See the `justfile` for available commands.
-- Environment variables for database settings are found in the `.env` file.
-- If you modify `.env`, a database reset may be required. Use:
-```sh
-  $ just db_delete
-  $ just db_start
-```
-or:
-```sh
-  $ just dev
-```
-
-### Testing Database
-
-The Docker container includes a separate test database. Examples of its usage can be found in test/integration/create_guestbook_entry_test.gleam.
-
-Tests interacting with the database can run using one of two strategies:
-1. Transaction-based tests (test_db_provider.transaction_test): Code runs inside a transaction that is rolled back afterward. Faster but not always feasible.
-2. Truncate-based tests (test_db_provider.truncate_test): Cleans up tables after running. Use this as a fallback.
-
-Prefer transaction tests unless specific scenarios require truncation.
-
-### Database Migrations
-
-Migrations are handled using DbMate. Always use the alias `just db [...]` to 
-ensure the correct environment variables are set.
-
-Some migrations, like bg_jobs, are executed automatically at startup. 
-Check `/src/providers/db/db_provider` for the setup process.
-
-
----
-# Environment Variables
+## Environment Variables
 - Development: Configure in .env.
 - Production: Set in fly.toml.
 
@@ -141,9 +109,86 @@ Middleware configuration is also located here under `/src/routes/middlewares`.
 Write integration tests here to simulate user workflows.
 
 ---
-# Development
+# Context
+JobContext and WebContext is passed to the web_server and jobs, it 
+contains the db connection and other useful values that should not be 
+constructed in place. This makes testing easier since you can construct 
+separate testing dependencies.
+
+# Logging provider
+Sets up the erlang default logger using wisp, also provides a context-builder 
+and logging functions for context aware logging.
+Separate log contexts are passed to jobs and web_server using the 
+`context.JobContext` and `context.WebContext` respectivly.
+
+There is also a `log_request_middleware` that logs requests and adds a 
+request_id to the logging context, the logging context is passed to 
+the controllers using context.WebContext.
+
+
+Create a new logging context 
+```gleam
+import providers/logging/logging_provider as log
+
+// Create a new log_context
+let example_logger = log.new("example_logger")
+|> with_context("thing", "value")
+
+// Log message to info level
+example_logger |> log.log_info("some log value")
+// -> INFO example_logger: some log value    |thing="value"
+```
+
+# Jobs provider
+Provides setup function that configures [bg_jos](https://hexdocs.pm/bg_jobs/). 
+This is also where you register your jobs.
+# Web_server provider
+Provides setup function for starting 
+[mist](https://hexdocs.pm/mist/index.html) - [wisp](https://hexdocs.pm/wisp/)
+
+
+# Database
+This starter uses **PostgreSQL** as the database. 
+The starter provides:
+- Development/testing database setup using docker, read more below
+- Database migrations using DbMate
+- Integration testing setup with postgres
+
+## Database setup
+- Development database configuration is managed via Docker. See the `justfile` for available commands.
+- Environment variables for database settings are found in the `.env` file.
+- If you modify `.env`, a database reset may be required. Use:
+```sh
+  $ just db_delete
+  $ just db_start
+```
+
+# Db provider
+Provides setup and helper functions related to setting up and connecting to the database.
+
+## Testing Database
+The Docker container includes a separate test database. Examples of 
+its usage can be found in `test/integration/create_guestbook_entry_test.gleam`.
+
+Tests interacting with the database can run using one of two strategies:
+1. Transaction-based tests (test_db_provider.transaction_test): Code 
+  runs inside a transaction that is rolled back afterward. Faster but not always feasible.
+2. Truncate-based tests (test_db_provider.truncate_test): Cleans up 
+  tables after running. Use this as a fallback.
+
+Prefer transaction tests unless specific scenarios require truncation.
+
+## Database Migrations
+
+Migrations are handled using DbMate. Always use the alias `just db [...]` to 
+ensure the correct environment variables are set.
+
+Some migrations, like bg_jobs, are executed automatically at startup. 
+Check `/src/providers/db/db_provider` for the setup process.
+
+
 
 ## TODO
-- [x] Integration testing
 - [ ] Frontend resources
-- [ ] [logging](https://hexdocs.pm/flash/)
+- [x] Integration testing
+- [x] logging

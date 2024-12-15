@@ -1,4 +1,3 @@
-import gleam/io
 import gleam/list
 import gleam/result
 import gleam/string
@@ -29,25 +28,13 @@ pub fn with_context(logging_ctx: LoggingContext, a: String, b) {
   )
 }
 
-@external(erlang, "io", "columns")
-pub fn io_columns() -> Result(Int, Nil)
-
 pub fn format(message: String, logging_ctx: LoggingContext) {
-  let width = io_columns() |> result.unwrap(100)
-
   let context_string =
     logging_ctx.attributes
     |> list.map(format_attributes)
-    |> string.join(with: " | ")
+    |> string.join(with: ", ")
 
-  let left =
-    string.pad_end(
-      logging_ctx.logger_name <> ": " <> message,
-      to: width / 2,
-      with: " ",
-    )
-
-  left <> "|" <> context_string
+  logging_ctx.logger_name <> ": " <> message <> "    |" <> context_string
 }
 
 fn format_attributes(kv: #(String, String)) {

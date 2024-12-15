@@ -23,7 +23,7 @@ pub fn main() {
 
   // Setup jobs process
   let assert Ok(bg_jobs) =
-    jobs_provider.setup(context.JobContext(conn, log.new("jobs_logger")))
+    jobs_provider.setup(context.JobContext(conn, log.new("job_logger")))
 
   // Setup webserver process
   let assert Ok(_webserver) =

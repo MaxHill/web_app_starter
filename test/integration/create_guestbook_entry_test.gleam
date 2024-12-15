@@ -4,6 +4,7 @@ import bg_jobs/postgres_db_adapter
 import bg_jobs/queue
 import context
 import dot_env
+import gleam/erlang/process
 import gleam/list
 import gleam/otp/static_supervisor as sup
 import gleam/string
@@ -35,6 +36,10 @@ pub fn setup(f: fn(context.WebContext) -> a) {
   let ctx = context.WebContext(conn: conn, log_ctx: log.new("test"), bg: bg)
 
   f(ctx)
+
+  bg.supervisor
+  |> process.unlink()
+  bg.supervisor |> process.kill()
 }
 
 pub fn create_guestbook_entry_test() {

@@ -8,6 +8,7 @@ default:
 dev: 
     mprocs "just db_start" "just watch_dev_server" "just watch_test" "just watch_db_generate_queries"
 
+
 # Start the dev server with watch 
 watch_dev_server:
     @just db wait
