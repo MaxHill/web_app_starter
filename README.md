@@ -17,7 +17,6 @@ A simple starter template for building web applications using
 - (TODO) Session management using [kv_sessions](https://hexdocs.pm/wisp_kv_sessions/index.html)
 - (TODO) Email provider
 - (TODO) Auth
-- (TODO) ETS cache
 
 ## Development system requirements
 - [Gleam](https://gleam.run/)
