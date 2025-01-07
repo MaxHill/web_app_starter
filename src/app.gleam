@@ -4,6 +4,7 @@ import gleam/erlang/process
 import providers/db/db_provider
 import providers/jobs/jobs_provider
 import providers/logging/logging_provider as log
+import providers/sessions/sessions_provider
 import providers/web_server/web_server_provider
 
 pub fn main() {
@@ -26,10 +27,12 @@ pub fn main() {
     jobs_provider.setup(context.JobContext(conn, log.new("job_logger")))
 
   // Setup webserver process
+  let assert Ok(sessions) = sessions_provider.setup(conn)
   let assert Ok(_webserver) =
     web_server_provider.setup(context.WebContext(
       conn,
       log.new("web_logger"),
+      sessions,
       bg_jobs,
     ))
 

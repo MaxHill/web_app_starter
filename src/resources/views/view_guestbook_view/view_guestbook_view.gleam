@@ -4,7 +4,10 @@ import lustre/attribute as a
 import lustre/element/html as h
 import models/guestbook_model/guestbook_model
 
-pub fn render(messages: List(guestbook_model.GuestbookMessage)) {
+pub fn render(
+  messages: List(guestbook_model.GuestbookMessage),
+  user: option.Option(String),
+) {
   let messages =
     messages
     |> list.map(fn(message) {
@@ -17,6 +20,8 @@ pub fn render(messages: List(guestbook_model.GuestbookMessage)) {
       ])
     })
 
+  let user = option.unwrap(user, "guest")
+
   h.html([], [
     h.head([], [
       h.title([], "Gleam web-app-starter"),
@@ -26,6 +31,7 @@ pub fn render(messages: List(guestbook_model.GuestbookMessage)) {
       ]),
     ]),
     h.body([], [
+      h.div([], [h.text("User: " <> user)]),
       h.div([], [
         h.h1([], [h.text("Messages:")]),
         h.ul([], messages),

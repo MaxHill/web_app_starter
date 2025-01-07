@@ -1,23 +1,32 @@
 import context
 import gleam/io
 import gleam/list
+import gleam/option
 import gleam/result
 import jobs/example_job
+import kv_sessions
 import lustre/element
 import models/guestbook_model/guestbook_model
 import providers/logging/logging_provider as log
+import providers/sessions/sessions_provider
 import resources/views/view_guestbook_view/view_guestbook_view
 import wisp
 
-pub fn get(_req: wisp.Request, ctx: context.WebContext) -> wisp.Response {
+pub fn get(req: wisp.Request, ctx: context.WebContext) -> wisp.Response {
   let guestbook_messages = guestbook_model.get_all_messages(ctx.conn)
+
+  let assert Ok(current_user) =
+    kv_sessions.CurrentSession(req, ctx.session)
+    |> sessions_provider.user_key()
+    |> kv_sessions.get()
+    |> io.debug
 
   ctx.log_ctx |> log.log_info("Someone browsed to the guestbook")
 
   case guestbook_messages {
     Ok(guestbook_messages) -> {
       wisp.html_response(
-        view_guestbook_view.render(guestbook_messages)
+        view_guestbook_view.render(guestbook_messages, current_user)
           |> element.to_document_string_builder,
         200,
       )

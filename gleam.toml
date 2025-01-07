@@ -14,9 +14,8 @@ version = "1.0.0"
 
 [dependencies]
 gleam_stdlib = ">= 0.34.0 and < 2.0.0"
-gleam_json = ">= 1.0.1 and < 2.0.0"
 wisp = ">= 1.2.0 and < 2.0.0"
-mist = ">= 3.0.0 and < 4.0.0"
+mist = ">= 3.0.0 and < 5.0.0"
 gleam_erlang = ">= 0.28.0 and < 1.0.0"
 lustre = ">= 4.6.2 and < 5.0.0"
 envoy = ">= 1.0.2 and < 2.0.0"
@@ -26,11 +25,13 @@ decode = ">= 0.4.1 and < 1.0.0"
 simplifile = ">= 2.2.0 and < 3.0.0"
 birl = ">= 1.7.1 and < 2.0.0"
 pog = ">= 1.0.0 and < 2.0.0"
-# bg_jobs = ">= 0.4.0 and < 1.0.0"
-bg_jobs = {path = "../bg_jobs/"}
+bg_jobs = ">= 0.4.0 and < 1.0.0"
 gleam_otp = ">= 0.16.0 and < 1.0.0"
 youid = ">= 1.2.0 and < 2.0.0"
 gtempo = ">= 5.1.2 and < 6.0.0"
+kv_sessions = ">= 0.1.0 and < 1.0.0"
+kv_sessions_postgres_adapter = ">= 0.1.0 and < 1.0.0"
+gleam_json = ">= 1.0.1 and < 3.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

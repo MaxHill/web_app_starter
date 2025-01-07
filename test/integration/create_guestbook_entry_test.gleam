@@ -12,6 +12,7 @@ import gleeunit/should
 import models/guestbook_model/guestbook_model
 import providers/db/test_db_provider
 import providers/logging/logging_provider as log
+import providers/sessions/sessions_provider
 import routes/routes
 import wisp/testing
 
@@ -33,7 +34,14 @@ pub fn setup(f: fn(context.WebContext) -> a) {
     )
     |> bg_jobs.build()
 
-  let ctx = context.WebContext(conn: conn, log_ctx: log.new("test"), bg: bg)
+  let assert Ok(session) = sessions_provider.setup_test()
+  let ctx =
+    context.WebContext(
+      conn: conn,
+      log_ctx: log.new("test"),
+      session: session,
+      bg: bg,
+    )
 
   f(ctx)
 

@@ -5,7 +5,7 @@ import pog
 /// A row you get from running the `create_message` query
 /// defined in `./src/models/guestbook_model/sql/create_message.sql`.
 ///
-/// > 🐿️ This type definition was generated automatically using v2.0.1 of the
+/// > 🐿️ This type definition was generated automatically using v2.0.5 of the
 /// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub type CreateMessageRow {
@@ -21,7 +21,7 @@ pub type CreateMessageRow {
 /// Runs the `create_message` query
 /// defined in `./src/models/guestbook_model/sql/create_message.sql`.
 ///
-/// > 🐿️ This function was generated automatically using v2.0.1 of
+/// > 🐿️ This function was generated automatically using v2.0.5 of
 /// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub fn create_message(db, arg_1, arg_2, arg_3, arg_4) {
@@ -54,7 +54,7 @@ RETURNING
 /// A row you get from running the `get_all_messages` query
 /// defined in `./src/models/guestbook_model/sql/get_all_messages.sql`.
 ///
-/// > 🐿️ This type definition was generated automatically using v2.0.1 of the
+/// > 🐿️ This type definition was generated automatically using v2.0.5 of the
 /// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub type GetAllMessagesRow {
@@ -70,7 +70,7 @@ pub type GetAllMessagesRow {
 /// Runs the `get_all_messages` query
 /// defined in `./src/models/guestbook_model/sql/get_all_messages.sql`.
 ///
-/// > 🐿️ This function was generated automatically using v2.0.1 of
+/// > 🐿️ This function was generated automatically using v2.0.5 of
 /// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub fn get_all_messages(db) {
